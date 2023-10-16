@@ -1,0 +1,6 @@
+-- Drop the tables
+DROP TABLE IF EXISTS AssignedSlots;
+DROP TABLE IF EXISTS Bids;
+DROP TABLE IF EXISTS WorkSlots;
+DROP TABLE IF EXISTS UserProfiles;
+DROP TABLE IF EXISTS Users;

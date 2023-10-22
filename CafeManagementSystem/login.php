@@ -1,38 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cafe Management System - Login</title>
-    <link rel="stylesheet" type="text/css" href="styles/login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="Login.css">
+    <title>Login Page</title>
 </head>
 <body>
-    <div class="background-image"></div>
-    <div class="login-container">
-        <img src="images/jks_logo.png" alt="Cafe Logo" class="logo">
-        <h1>Cafe Management System</h1>
-        <p class="tagline">Serving Excellence, One Cup at a Time</p>
-        <form action="loginController.php" method="post">
-            <label for="username">Username or Email:</label>
-            <input type="text" name="username" id="username" required>
-            
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            
+    <div class="container">
+        <form class="login-form" action="LoginController.php" method="POST">
+            <h2>Login</h2>
             <div class="form-group">
-                <input type="checkbox" name="remember" id="remember">
-                <label for="remember">Remember Me</label>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
-            
-            <button type="submit" class="login-button">Login</button>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role:</label>
+                <select id="role" name="role" required>
+                    <option value="owner">Owner</option>
+                    <option value="manager">Manager</option>
+                    <option value="admin">Admin</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login">
+            </div>
         </form>
-        
-        <a href="forgot_password.php" class="forgot-password">Forgot your password?</a>
-    </div>
-    
-    <div class="footer-links">
-        <a href="about_us.php">About Us</a>
-        <a href="menu.php">Menu</a>
-        <a href="contact.php">Contact</a>
     </div>
 </body>
 </html>

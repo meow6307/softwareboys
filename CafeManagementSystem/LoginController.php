@@ -1,11 +1,10 @@
 <?php
 // Database connection parameters
 $host = 'localhost';
-$db_name = 'your_database_name';
-$username = 'your_database_user';
-$password = 'your_database_password';
+$db_name = 'cafestaffmanagement'; // Name of the database
+$username = 'root';
+$password = '';
 
-// Attempt to establish a database connection
 try {
     $conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -27,7 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        // Authentication successful, redirect to the dashboard
+        // Authentication successful
+        echo "<script>alert('Successfully logged in!');</script>";
+        // Redirect to the dashboard
         header("Location: dashboard.php");
         exit();
     } else {

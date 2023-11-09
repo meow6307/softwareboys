@@ -1,4 +1,4 @@
--- Delete data from the tables
+-- Delete data from all tables in the database
 DELETE FROM AssignedSlots;
 DELETE FROM CafeManagerAssignment;
 DELETE FROM Cafes;

@@ -12,6 +12,13 @@
     </header>
 
     <main>
+        <?php
+        // Display error message if login fails
+        if (isset($_GET['error']) && $_GET['error'] == 1) {
+            echo '<p class="error-message">Invalid username or password. Please try again.</p>';
+        }
+        ?>
+
         <form action="logincontroller.php" method="post">
             <div class="login-form">
                 <label for="username">Username:</label>

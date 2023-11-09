@@ -1,42 +1,66 @@
 <?php
-// Database connection parameters
-$host = 'localhost';
-$db_name = 'your_database_name';
-$username = 'your_database_user';
-$password = 'your_database_password';
+session_start();
 
-// Attempt to establish a database connection
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database Connection Error: " . $e->getMessage());
-}
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $username = $_POST["username"];
+        $password = $_POST["password"];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+        // Database connection
+        $db = new mysqli("localhost", "root", "", "cafe_staff_management");
 
-    // Authenticate the user against the database
-    $sql = "SELECT * FROM Users WHERE Username = :username AND Password = :password";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':password', $password);
-    $stmt->execute();
+        // Check for database connection errors
+        if ($db->connect_error) {
+            throw new Exception("Database connection failed: " . $db->connect_error);
+        }
 
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Prepare and execute a SQL query to check the user's credentials and role
+        $query = "SELECT ID, FullName, UserRoleID FROM User WHERE Username = ? AND Password = ?";
+        $stmt = $db->prepare($query);
 
-    if ($user) {
-        // Authentication successful, redirect to the dashboard
-        header("Location: dashboard.php");
-        exit();
+        if (!$stmt) {
+            throw new Exception("Prepare statement error: " . $db->error);
+        }
+
+        $stmt->bind_param("ss", $username, $password);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement error: " . $stmt->error);
+        }
+
+        $stmt->bind_result($userID, $fullName, $userRoleID);
+
+        if ($stmt->fetch()) {
+            // User is authenticated
+            $_SESSION["user_id"] = $userID;
+            $_SESSION["full_name"] = $fullName;
+            $_SESSION["user_role_id"] = $userRoleID;
+
+            if ($_SESSION["user_role_id"] === 1) {
+                $dashboardLink = "owner.php";
+            } elseif ($_SESSION["user_role_id"] === 2) {
+                $dashboardLink = "staff.php";
+            } elseif ($_SESSION["user_role_id"] === 3) {
+                $dashboardLink = "manager.php";
+            } elseif ($_SESSION["user_role_id"] === 4) {
+                $dashboardLink = "adminhome.php";
+            }
+
+            header("Location: $dashboardLink");
+            exit();
+        } else {
+            // Authentication failed, show an error message
+            $_SESSION["login_error"] = "Invalid username or password.";
+            header("Location: login.php?error=1");
+        }
+
+        // Close the database connection
+        $stmt->close();
+        $db->close();
     } else {
-        // Authentication failed, display an error message on the login page
-        header("Location: login.php?error=1");
-        exit();
+        header("Location: login.php");
     }
+} catch (Exception $e) {
+    header("Location: error.php?message=" . urlencode($e->getMessage()));
 }
-
-// Include the login form
-include('login.php');
 ?>

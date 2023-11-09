@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="Login.css">
-    <title>Login Page</title>
+    <title>Login - Cafe Staff Management System</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
 </head>
 <body>
-    <div class="container">
-        <form class="login-form" action="LoginController.php" method="POST">
-            <h2>Login</h2>
-            <div class="form-group">
+    <header>
+        <h1>Login to Cafe Staff Management System</h1>
+    </header>
+
+    <main>
+        <form action="logincontroller.php" method="post">
+            <div class="login-form">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
-            </div>
-            <div class="form-group">
+                <input type="text" id="username" name="username" required><br><br>
+                
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <div class="form-group">
-                <label for="role">Role:</label>
-                <select id="role" name="role" required>
-                    <option value="owner">Owner</option>
-                    <option value="manager">Manager</option>
-                    <option value="admin">Admin</option>
-                    <option value="staff">Staff</option>
-                </select>
-            </div>
-            <div class="form-group">
+                <input type="password" id="password" name="password" required><br><br>
+                
                 <input type="submit" value="Login">
             </div>
         </form>
-    </div>
+    </main>
+
+    <footer>
+        &copy; <?php echo date("Y"); ?> Cafe Staff Management System
+    </footer>
 </body>
 </html>

@@ -1,72 +1,61 @@
--- Create the database
-CREATE DATABASE CafeStaffManagement;
+-- Step 1: Create a Database
+CREATE DATABASE cafe_staff_management;
 
--- Use the newly created database
-USE CafeStaffManagement;
+-- Step 2: Select the Database
+USE cafe_staff_management;
 
--- Create the Users table to store user information
-CREATE TABLE Users (
-    UserID INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(50) NOT NULL,
+-- Step 3: Create Tables within the Selected Database
+
+-- User Roles
+CREATE TABLE UserRole (
+    ID INT PRIMARY KEY,
+    RoleName VARCHAR(255) NOT NULL
+);
+
+-- Users Table
+CREATE TABLE User (
+    ID INT PRIMARY KEY,
+    FullName VARCHAR(255) NOT NULL,
+    Username VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Role ENUM('Owner', 'Admin', 'Manager', 'Staff') NOT NULL,
-    Status ENUM('Active', 'Suspended') NOT NULL,
-    Email VARCHAR(100)
+    UserRoleID INT NOT NULL,
+    FOREIGN KEY (UserRoleID) REFERENCES UserRole(ID)
 );
 
--- Create the UserProfiles table to store additional user details
-CREATE TABLE UserProfiles (
-    ProfileID INT AUTO_INCREMENT PRIMARY KEY,
-    UserID INT UNIQUE,
-    Name VARCHAR(100) NOT NULL,
-    ContactInfo VARCHAR(255)
-);
-
--- Create the WorkSlots table to store information about work slots
-CREATE TABLE WorkSlots (
-    SlotID INT AUTO_INCREMENT PRIMARY KEY,
-    CafeID INT,
+-- Work Slots
+CREATE TABLE WorkSlot (
+    ID INT PRIMARY KEY,
     Date DATE NOT NULL,
-    Time TIME NOT NULL,
-    CafeRole ENUM('Chef', 'Cashier', 'Waiter') NOT NULL,
-    MaxStaff INT NOT NULL,
-    FOREIGN KEY (CafeID) REFERENCES Users (UserID)
+    StartTime TIME NOT NULL,
+    EndTime TIME NOT NULL,
+    Description VARCHAR(255) NOT NULL,
+    CafeOwnerID INT,
+    FOREIGN KEY (CafeOwnerID) REFERENCES User(ID)
 );
 
--- Create the Bids table to store bid information
-CREATE TABLE Bids (
-    BidID INT AUTO_INCREMENT PRIMARY KEY,
-    WorkSlotID INT,
-    StaffID INT,
-    BidStatus ENUM('Pending', 'Approved', 'Rejected') NOT NULL,
-    FOREIGN KEY (WorkSlotID) REFERENCES WorkSlots (SlotID),
-    FOREIGN KEY (StaffID) REFERENCES Users (UserID)
+-- Assigned Slots
+CREATE TABLE AssignedSlot (
+    ID INT PRIMARY KEY,
+    WorkSlotID INT NOT NULL,
+    StaffID INT NOT NULL,
+    AssignmentDate DATE NOT NULL,
+    FOREIGN KEY (WorkSlotID) REFERENCES WorkSlot(ID),
+    FOREIGN KEY (StaffID) REFERENCES User(ID)
 );
 
--- Create the Cafes table to store cafe details
-CREATE TABLE Cafes (
-    CafeID INT AUTO_INCREMENT PRIMARY KEY,
-    OwnerID INT,
-    CafeName VARCHAR(100) NOT NULL,
-    Location VARCHAR(255),
-    -- Other Cafe Details
-    FOREIGN KEY (OwnerID) REFERENCES Users (UserID)
+-- Bid Statuses
+CREATE TABLE BidStatus (
+    ID INT PRIMARY KEY,
+    StatusName VARCHAR(255) NOT NULL
 );
 
--- Create the CafeManagerAssignment table to track assignments made by cafe managers
-CREATE TABLE CafeManagerAssignment (
-    AssignmentID INT AUTO_INCREMENT PRIMARY KEY,
-    ManagerID INT,
-    WorkSlotID INT,
-    FOREIGN KEY (ManagerID) REFERENCES Users (UserID),
-    FOREIGN KEY (WorkSlotID) REFERENCES WorkSlots (SlotID)
-);
-
--- Create the AssignedSlots table to track staff assignments to work slots
-CREATE TABLE AssignedSlots (
-    AssignmentID INT AUTO_INCREMENT PRIMARY KEY,
-    WorkSlotID INT,
-    StaffID INT,
-    FOREIGN KEY (WorkSlotID) REFERENCES WorkSlots (SlotID),
-    FOREIGN KEY (StaffID) REFERENCES Users (UserID)
+-- Bids for Work Slots
+CREATE TABLE Bid (
+    ID INT PRIMARY KEY,
+    StaffID INT NOT NULL,
+    WorkSlotID INT NOT NULL,
+    StatusID INT,
+    FOREIGN KEY (StaffID) REFERENCES User(ID),
+    FOREIGN KEY (WorkSlotID) REFERENCES WorkSlot(ID),
+    FOREIGN KEY (StatusID) REFERENCES BidStatus(ID)
 );
